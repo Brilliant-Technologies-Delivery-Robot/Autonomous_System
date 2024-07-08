@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20240708-1159-Experimental"
+	Name="OmarBenEmad"
+	Generator="ctest-3.16.3"
+	CompilerName="/usr/bin/c++"
+	CompilerVersion="9.4.0"
+	OSName="Linux"
+	Hostname="OmarBenEmad"
+	OSRelease="5.15.0-107-generic"
+	OSVersion="#117~20.04.1-Ubuntu SMP Tue Apr 30 10:35:57 UTC 2024"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="AuthenticAMD"
+	VendorID="Advanced Micro Devices"
+	FamilyID="25"
+	ModelID="80"
+	ProcessorCacheSize="512"
+	NumberOfLogicalCPU="12"
+	NumberOfPhysicalCPU="6"
+	TotalVirtualMemory="5721"
+	TotalPhysicalMemory="13821"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="4095.74"
+	>
+	<Testing>
+		<StartDateTime>Jul 08 15:05 EEST</StartDateTime>
+		<StartTestTime>1720440313</StartTestTime>
+		<TestList/>
+		<EndDateTime>Jul 08 15:05 EEST</EndDateTime>
+		<EndTestTime>1720440313</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

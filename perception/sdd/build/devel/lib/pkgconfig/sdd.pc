@@ -1,0 +1,8 @@
+prefix=/home/omar/delieveryRobotPerception/src/sdd/build/devel
+
+Name: sdd
+Description: Description of sdd
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
