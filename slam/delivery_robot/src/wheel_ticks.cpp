@@ -5,6 +5,10 @@
 #include <cmath>
 #include <iostream>
 
+using namespace std;
+
+
+
 long _PreviousLeftEncoderCounts = 0;
 long _PreviousRightEncoderCounts = 0;
 ros::Time current_time_encoder, last_time_encoder;
@@ -36,11 +40,14 @@ void WheelCallback(const geometry_msgs::Vector3::ConstPtr& ticks)
   _PreviousLeftEncoderCounts = ticks->x;
   _PreviousRightEncoderCounts = ticks->y;
   last_time_encoder = current_time_encoder;
+  
+  std::cout<< "wheel_encoders_msg" ;
 }
 
 int main(int argc, char **argv)
 {
 
+ cout<< "inside_main" ;
   ros::init(argc, argv, "odometry_publisher");
   ros::NodeHandle n;
   sub = n.subscribe("wheel_encoder", 100, WheelCallback);
@@ -53,6 +60,7 @@ int main(int argc, char **argv)
 
   ros::Rate r(1.0);
   while(ros::ok()) {
+    cout<<"inside ros ok";
     current_time = ros::Time::now();
 
     //compute odometry in a typical way given the velocities of the robot
