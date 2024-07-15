@@ -7,8 +7,6 @@
 
 using namespace std;
 
-
-
 long _PreviousLeftEncoderCounts = 0;
 long _PreviousRightEncoderCounts = 0;
 ros::Time current_time_encoder, last_time_encoder;
