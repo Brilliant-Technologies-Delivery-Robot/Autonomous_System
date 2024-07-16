@@ -23,8 +23,8 @@ const double wheel_radius = 0.065; // Radius of the wheels (in meters)
 void VelocityCallback(const sensor_msgs::JointState::ConstPtr& vel)
 {
   // Assuming vel->linear.x and vel->linear.y are the right and left wheel velocities respectively
-  right_wheel_velocity = vel.velocity[0];
-  left_wheel_velocity = vel.velocity[1];
+  right_wheel_velocity = vel->velocity[0];
+  left_wheel_velocity = vel->velocity[1];
 }
 
 int main(int argc, char **argv)
