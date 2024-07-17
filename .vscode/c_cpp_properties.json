@@ -1,22 +1,23 @@
 {
-  "configurations": [
-    {
-      "browse": {
-        "databaseFilename": "${default}",
-        "limitSymbolsToIncludedHeaders": false
-      },
-      "includePath": [
-        "/home/ramzy/roar_ws/devel/include/**",
-        "/opt/ros/noetic/include/**",
-        "/home/ramzy/roar_ws/src/ros_imu_bno055/include/**",
-        "/usr/include/**"
-      ],
-      "name": "ROS",
-      "intelliSenseMode": "gcc-x64",
-      "compilerPath": "/usr/bin/gcc",
-      "cStandard": "gnu11",
-      "cppStandard": "c++14"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "${default}",
+                "limitSymbolsToIncludedHeaders": false
+            },
+            "includePath": [
+                "/home/ramzy/roar_ws/devel/include/**",
+                "/opt/ros/noetic/include/**",
+                "/home/ramzy/roar_ws/src/ros_imu_bno055/include/**",
+                "/usr/include/**"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "c++14",
+            "compileCommands": "${workspaceFolder}/perception/sdd/build/compile_commands.json"
+        }
+    ],
+    "version": 4
 }

@@ -7,7 +7,9 @@
   <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot3_slam)/maps/map.yaml" /> -->
 
   <!-- Arguments -->
-  <arg name="scan_topic"     default="scan"/>
+  <arg name="scan_topic"     default="base_scan"/>
+   <!-- uncomment in case of using real lidar-->
+  <!--<arg name="scan_topic"     default="scan"/>-->
   <arg name="initial_pose_x" default="0.0"/>
   <arg name="initial_pose_y" default="0.0"/>
   <arg name="initial_pose_a" default="0.0"/>
