@@ -89,6 +89,8 @@ int main(int argc, char **argv)
     x += delta_x;
     y += delta_y;
     th += delta_th;
+    std::cout << "x: " << x << endl ;
+    std::cout << "y: " << y << endl ;
     std::cout<< "th" << endl;
     std::cout<< th << endl;
 

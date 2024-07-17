@@ -241,8 +241,8 @@
     </actuator>
   </transmission> -->
 
-  <!-- add differential drive plugin-->
-  <gazebo>
+  <!-- add differential drive plugin -->
+  <!-- <gazebo>
     <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
       <leftJoint>left_wheel_joint</leftJoint>
       <rightJoint>right_wheel_joint</rightJoint>
@@ -260,6 +260,6 @@
       <updateRate>100.0</updateRate>
       <publishWheelJointState>false</publishWheelJointState>
     </plugin>
-  </gazebo>
+  </gazebo> -->
 
 </robot>
