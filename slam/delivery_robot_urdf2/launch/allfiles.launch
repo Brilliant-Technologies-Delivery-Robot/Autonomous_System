@@ -1,0 +1,17 @@
+<launch>
+
+  <include file="$(find gmapping)/slam_gmapping_pr2.launch"/>
+  
+   <include file="$(find delivery_robot)/launch/odom.launch"/>
+    
+  <include file="$(find rplidar_ros)/launch/rplidar_a1.launch"/>
+  
+   <include file="$(find delivery_robot)/launch/display.launch"/>
+   
+  <include file="$(find delivery_robot)/launch/rosserial.launch"/>
+
+
+
+
+
+</launch>
