@@ -1,0 +1,29 @@
+<launch>
+
+    <!-- Define arguments -->
+    <arg name="gazebo" default="false" />
+    <arg name="rviz" default="false" />
+    
+    <!-- Include Gazebo launch if 'gazebo' argument is true -->
+    <group if="$(arg gazebo)">
+        <include file="$(find delivery_robot)/launch/gazebo.launch" />
+    </group>
+    
+    <!-- Include RViz launch if 'rviz' argument is true -->
+    <group if="$(arg rviz)">
+        <include file="$(find delivery_robot)/launch/display.launch" />
+    </group>
+    
+    <!-- Launch  camera_stream_sim.py -->
+    <node name="camera_stream_node" pkg="delivery_robot" type="camera_stream_sim.py"  />
+    <!-- <node name="cam_cap_pub_node" pkg="arm_urdf" type="cam_cap_pub.py" output="screen" /> -->
+  
+  
+    <!-- Launch BoundingBox_with_center.py -->
+    <node name="detection_extractor_node" pkg="delivery_robot" type="camera_sub_sim.py"  />
+    <!-- <node name="BoundingBox_with_center_node" pkg="arm_urdf" type="BoundingBox_with_center.py" output="screen" /> -->
+  
+    <!-- Launch trial.py -->
+    <node name="pcd_pub_node" pkg="delivery_robot" type="sub_detgepthimage.py"  output="screen"/>
+  
+  </launch>
