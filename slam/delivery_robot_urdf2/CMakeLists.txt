@@ -34,3 +34,6 @@ endforeach(dir)
 
 add_executable(odom_simulation src/odometry_publisher_sim.cpp)
 target_link_libraries(odom_simulation ${catkin_LIBRARIES})
+
+add_executable(odom src/wheel_ticks.cpp)
+target_link_libraries(odom ${catkin_LIBRARIES})

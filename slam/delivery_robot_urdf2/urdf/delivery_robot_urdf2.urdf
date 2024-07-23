@@ -4,6 +4,20 @@
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot
   name="delivery_robot_urdf2">
+  <!-- add virtual joint between base_link and base_footprint-->
+  <link
+    name="base_footprint" />
+  <joint
+    name="base_footprint_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_footprint" />
+    <child
+      link="base_link" />
+  </joint>
   <link
     name="base_link">
     <inertial>
@@ -185,7 +199,7 @@
     <material>Gazebo/FlatBlack</material>
     <sensor type="ray" name="lds_lfcd_sensor">
       <pose>0 0 0 0 0 0</pose>
-      <visualize>true</visualize>
+      <visualize>false</visualize>
       <update_rate>5</update_rate>
       <ray>
         <scan>
@@ -214,12 +228,12 @@
     </sensor>
   </gazebo>
 
-  <gazebo>
+  <!-- <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
     </plugin>
-  </gazebo>
+  </gazebo> -->
 
-  <transmission name="tran1">
+  <!-- <transmission name="tran1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="right_wheel_joint">
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
@@ -239,5 +253,27 @@
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission> -->
+
+  <!-- add differential drive plugin -->
+  <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <leftJoint>left_wheel_joint</leftJoint>
+      <rightJoint>right_wheel_joint</rightJoint>
+      <wheelSeparation>0.45</wheelSeparation>
+      <wheelDiameter>0.065</wheelDiameter>
+      <torque>5.0</torque>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <publishWheelTF>true</publishWheelTF>
+      <publishTf>true</publishTf>
+      <publishOdomTF>true</publishOdomTF>
+      <legacyMode>false</legacyMode>
+      <updateRate>100.0</updateRate>
+      <publishWheelJointState>false</publishWheelJointState>
+    </plugin>
+  </gazebo>
+
 </robot>

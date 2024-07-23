@@ -7,9 +7,9 @@
   <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot3_slam)/maps/map.yaml" /> -->
 
   <!-- Arguments -->
-  <arg name="scan_topic"     default="base_scan"/>
+   <!--<arg name="scan_topic"     default="base_scan"/>-->
    <!-- uncomment in case of using real lidar-->
-  <!--<arg name="scan_topic"     default="scan"/>-->
+  <arg name="scan_topic"     default="base_scan"/>
   <arg name="initial_pose_x" default="0.0"/>
   <arg name="initial_pose_y" default="0.0"/>
   <arg name="initial_pose_a" default="0.0"/>
@@ -20,8 +20,8 @@
      <param name="min_particles"             value="500"/>
     <param name="max_particles"             value="3000"/>
     <param name="kld_err"                   value="0.02"/>
-    <param name="update_min_d"              value="0.20"/>
-    <param name="update_min_a"              value="0.20"/>
+    <param name="update_min_d"              value="0.01"/>
+    <param name="update_min_a"              value="0.1"/>
     <param name="resample_interval"         value="1"/>
     <param name="transform_tolerance"       value="0.5"/>
     <param name="recovery_alpha_slow"       value="0.00"/>
@@ -32,7 +32,7 @@
     <param name="gui_publish_rate"          value="50.0"/>
 
     <remap from="scan"                      to="$(arg scan_topic)"/>
-    <param name="laser_max_range"           value="3.5"/>
+    <param name="laser_max_range"           value="10.0"/>
     <param name="laser_max_beams"           value="180"/>
     <param name="laser_z_hit"               value="0.5"/>
     <param name="laser_z_short"             value="0.05"/>
@@ -49,7 +49,7 @@
     <param name="odom_alpha3"               value="0.0"/>
     <param name="odom_alpha4"               value="0.0"/>
     <param name="odom_frame_id"             value="odom"/>
-    <param name="base_frame_id"             value="base_link"/> 
+    <param name="base_frame_id"             value="base_footprint"/> 
 
   </node>
 </launch>

@@ -7,10 +7,15 @@
 
 using namespace std;
 
+
+
 long _PreviousLeftEncoderCounts = 0;
 long _PreviousRightEncoderCounts = 0;
 ros::Time current_time_encoder, last_time_encoder;
-double DistancePerCount = (3.14159265 * 0.065) / 600;
+double DistancePerCount = (2* 3.14159265 * 0.065) / 1320;
+
+const double wheel_base = 0.45; // Distance between the wheels (in meters)
+const double wheel_radius = 0.065; // Radius of the wheels (in meters)
 
 ros::Subscriber sub;
 ros::Publisher odom_pub;
@@ -18,28 +23,37 @@ ros::Publisher odom_pub;
 double x = 0.0;
 double y = 0.0;
 double th = 0.0;
-
+double _PPSx=0.0;
+double _PPSy=0.0;
 double vx = 0.0;
 double vy = 0.0;
 double vth = 0.0;
 double deltaLeft = 0.0;
 double deltaRight = 0.0;
 
-void WheelCallback(const geometry_msgs::Vector3::ConstPtr& ticks)
+void WheelCallback(const geometry_msgs::Vector3::ConstPtr& velocities)
 {
   current_time_encoder = ros::Time::now();
 
-  deltaLeft = ticks->x - _PreviousLeftEncoderCounts;
+  _PPSx = velocities->x;
+  _PPSy = velocities->y ;
+  vx=_PPSx * DistancePerCount;
+  vy=_PPSy * DistancePerCount;
+ /* deltaLeft = ticks->x - _PreviousLeftEncoderCounts;
   deltaRight = ticks->y - _PreviousRightEncoderCounts;
 
   vx = deltaLeft * DistancePerCount; // (current_time_encoder - last_time_encoder).toSec();
-  vy = deltaRight * DistancePerCount; // (current_time_encoder - last_time_encoder).toSec();  
+  vy = deltaRight * DistancePerCount; // (current_time_encoder - last_time_encoder).toSec();*/  
+  //std::cout<< "vx" << endl;
+  //std::cout<< vx << endl;
+  //std::cout<< "vy" << endl;
+  //std::cout<< vy << endl;
 
-  _PreviousLeftEncoderCounts = ticks->x;
-  _PreviousRightEncoderCounts = ticks->y;
+ // _PreviousLeftEncoderCounts = ticks->x;
+ // _PreviousRightEncoderCounts = ticks->y;
   last_time_encoder = current_time_encoder;
   
-  std::cout<< "wheel_encoders_msg" ;
+  //std::cout<< "wheel_encoders_msg" ;
 }
 
 int main(int argc, char **argv)
@@ -58,18 +72,27 @@ int main(int argc, char **argv)
 
   ros::Rate r(1.0);
   while(ros::ok()) {
-    cout<<"inside ros ok";
+    //cout<<"inside ros ok";
     current_time = ros::Time::now();
 
+    double linear_velocity = (vx + vy) * wheel_radius / 2.0;
+    double vth = (vx - vy) * wheel_radius / wheel_base;
     //compute odometry in a typical way given the velocities of the robot
     double dt = (current_time - last_time).toSec();
-    double delta_x = (vx * cos(th) - vy * sin(th)) * dt;
-    double delta_y = (vx * sin(th) + vy * cos(th)) * dt;
+    std::cout<< "dt" << endl;
+    std::cout<< dt << endl;
+    double delta_x = linear_velocity * cos(th) * dt;
+    double delta_y = linear_velocity * sin(th) * dt;
     double delta_th = vth * dt;
-
+    std::cout<< "delta_th" << endl;
+    std::cout<< delta_th << endl;
     x += delta_x;
     y += delta_y;
     th += delta_th;
+    std::cout << "x: " << x << endl ;
+    std::cout << "y: " << y << endl ;
+    std::cout<< "th" << endl;
+    std::cout<< th << endl;
 
     //since all odometry is 6DOF we'll need a quaternion created from yaw
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
@@ -98,13 +121,17 @@ int main(int argc, char **argv)
     odom.pose.pose.position.y = y;
     odom.pose.pose.position.z = 0.0;
     odom.pose.pose.orientation = odom_quat;
-
+    
+    std::cout << "odom_quat" << endl;
+    std::cout << odom_quat << endl;
+   
     //set the velocity
     odom.child_frame_id = "base_link";
     odom.twist.twist.linear.x = vx;
     odom.twist.twist.linear.y = vy;
     odom.twist.twist.angular.z = vth;
-
+    std::cout<< "vth" << endl;
+    std::cout<< vth << endl;
     //publish the message
     odom_pub.publish(odom);
 
@@ -114,4 +141,3 @@ int main(int argc, char **argv)
   }
   return 0;
 }
-

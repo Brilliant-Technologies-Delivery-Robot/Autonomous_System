@@ -1,4 +1,4 @@
-image: /home/ramzy/delivery_robot/src/Autonomous_System/slam/delivery_robot_urdf2/maps/map.pgm
+image: real_map1.pgm
 resolution: 0.010000
 origin: [-10.000000, -10.000000, 0.000000]
 negate: 0
