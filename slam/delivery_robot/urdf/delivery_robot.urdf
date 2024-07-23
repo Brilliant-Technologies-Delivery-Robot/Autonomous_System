@@ -155,36 +155,7 @@
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
     </plugin>
   </gazebo>
-  <link name="laser">
-    <visual>
-      <origin xyz="0 0 0.0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://delivery_robot/meshes/lds.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-    </visual>
-
-    <collision>
-      <origin xyz="0.015 0 -0.0065" rpy="0 0 0"/>
-      <geometry>
-        <cylinder length="0.0315" radius="0.055"/>
-      </geometry>
-    </collision>
-
-    <inertial>
-      <mass value="0.114" />
-      <origin xyz="0 0 0" />
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
-               iyy="0.001" iyz="0.0"
-               izz="0.001" />
-    </inertial>
-  </link>
-  <joint name="laser_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz="0.0 0 0.244" rpy="0 0 0" />
-    <parent link="base_link" />
-    <child link="laser" />
-  </joint>
-
+  
   <gazebo reference="laser">
     <material>Gazebo/FlatBlack</material>
     <sensor type="ray" name="lds_lfcd_sensor">
