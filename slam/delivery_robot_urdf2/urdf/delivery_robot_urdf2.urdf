@@ -256,7 +256,7 @@
   </transmission> -->
 
   <!-- add differential drive plugin -->
-  <!-- <gazebo>
+  <gazebo>
     <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
       <leftJoint>left_wheel_joint</leftJoint>
       <rightJoint>right_wheel_joint</rightJoint>
@@ -266,7 +266,7 @@
       <commandTopic>cmd_vel</commandTopic>
       <odometryTopic>odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
-      <robotBaseFrame>base_link</robotBaseFrame>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
       <publishWheelTF>true</publishWheelTF>
       <publishTf>true</publishTf>
       <publishOdomTF>true</publishOdomTF>
@@ -274,6 +274,6 @@
       <updateRate>100.0</updateRate>
       <publishWheelJointState>false</publishWheelJointState>
     </plugin>
-  </gazebo> -->
+  </gazebo>
 
 </robot>
