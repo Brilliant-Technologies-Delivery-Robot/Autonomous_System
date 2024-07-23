@@ -1,8 +1,0 @@
-prefix=/home/omar/catkin_ws/install
-
-Name: kinect_scripts
-Description: Description of kinect_scripts
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
