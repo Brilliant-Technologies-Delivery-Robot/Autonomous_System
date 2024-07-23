@@ -1,6 +1,6 @@
 <launch>
 
-  <include file="$(find gmapping)/slam_gmapping_pr2.launch"/>
+  <!-- <include file="$(find gmapping)/slam_gmapping_pr2.launch"/> -->
   
    <include file="$(find delivery_robot_urdf2)/launch/odom.launch"/>
     
@@ -8,9 +8,9 @@
   
    <include file="$(find delivery_robot_urdf2)/launch/display.launch"/>
    
-  <include file="$(find delivery_robot_urdf2)/launch/rosserial.launch"/>
+  <!-- <include file="$(find delivery_robot_urdf2)/launch/rosserial.launch"/> -->
   
-  <!-- <include file="$(find amcl2)/launch/localization.launch"/> -->
+  <include file="$(find amcl2)/launch/localization.launch"/>
 
 
 </launch>
