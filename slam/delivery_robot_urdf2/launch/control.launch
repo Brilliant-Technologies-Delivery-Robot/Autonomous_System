@@ -1,0 +1,8 @@
+<launch>
+    <rosparam file="$(find delivery_robot_urdf2)/config/controllers.yaml" command="load"/>
+    <rosparam file="$(find delivery_robot_urdf2)/config/joint_limits.yaml" command="load"/>
+
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="true" output="screen" args="joints_update mobile_base_controller" >
+    </node>
+
+</launch>

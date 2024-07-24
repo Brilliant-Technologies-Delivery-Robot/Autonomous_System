@@ -9,7 +9,9 @@ std_msgs
 geometry_msgs
 nav_msgs
 sensor_msgs
-tf)
+tf
+control_msgs
+controller_manager)
 
 catkin_package(
 	CATKIN_DEPENDS
@@ -18,7 +20,9 @@ catkin_package(
 	std_msgs
 	geometry_msgs
 	nav_msgs
-	sensor_msgs)
+	sensor_msgs
+	control_msgs
+	controller_manager)
 
 include_directories(
   include  
@@ -37,3 +41,7 @@ target_link_libraries(odom_simulation ${catkin_LIBRARIES})
 
 add_executable(odom src/wheel_ticks.cpp)
 target_link_libraries(odom ${catkin_LIBRARIES})
+
+add_executable(hardware_interface src/hardware_interface.cpp)
+target_link_libraries(hardware_interface ${catkin_LIBRARIES})
+target_include_directories(hardware_interface PRIVATE include)

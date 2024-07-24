@@ -59,7 +59,7 @@ void WheelCallback(const geometry_msgs::Vector3::ConstPtr& velocities)
 int main(int argc, char **argv)
 {
 
- cout<< "inside_main" ;
+//  cout<< "inside_main" ;
   ros::init(argc, argv, "odometry_publisher");
   ros::NodeHandle n;
   sub = n.subscribe("wheel_encoder", 100, WheelCallback);
@@ -79,20 +79,20 @@ int main(int argc, char **argv)
     double vth = (vx - vy) * wheel_radius / wheel_base;
     //compute odometry in a typical way given the velocities of the robot
     double dt = (current_time - last_time).toSec();
-    std::cout<< "dt" << endl;
-    std::cout<< dt << endl;
+    // std::cout<< "dt" << endl;
+    // std::cout<< dt << endl;
     double delta_x = linear_velocity * cos(th) * dt;
     double delta_y = linear_velocity * sin(th) * dt;
     double delta_th = vth * dt;
-    std::cout<< "delta_th" << endl;
-    std::cout<< delta_th << endl;
+    // std::cout<< "delta_th" << endl;
+    // std::cout<< delta_th << endl;
     x += delta_x;
     y += delta_y;
     th += delta_th;
-    std::cout << "x: " << x << endl ;
-    std::cout << "y: " << y << endl ;
-    std::cout<< "th" << endl;
-    std::cout<< th << endl;
+    // std::cout << "x: " << x << endl ;
+    // std::cout << "y: " << y << endl ;
+    // std::cout<< "th" << endl;
+    // std::cout<< th << endl;
 
     //since all odometry is 6DOF we'll need a quaternion created from yaw
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
     geometry_msgs::TransformStamped odom_trans;
     odom_trans.header.stamp = current_time;
     odom_trans.header.frame_id = "odom";
-    odom_trans.child_frame_id = "base_footprint";
+    odom_trans.child_frame_id = "base_link";
 
     odom_trans.transform.translation.x = x;
     odom_trans.transform.translation.y = y;
@@ -122,16 +122,16 @@ int main(int argc, char **argv)
     odom.pose.pose.position.z = 0.0;
     odom.pose.pose.orientation = odom_quat;
     
-    std::cout << "odom_quat" << endl;
-    std::cout << odom_quat << endl;
+    // std::cout << "odom_quat" << endl;
+    // std::cout << odom_quat << endl;
    
     //set the velocity
-    odom.child_frame_id = "base_footprint";
+    odom.child_frame_id = "base_link";
     odom.twist.twist.linear.x = vx;
     odom.twist.twist.linear.y = vy;
     odom.twist.twist.angular.z = vth;
-    std::cout<< "vth" << endl;
-    std::cout<< vth << endl;
+    // std::cout<< "vth" << endl;
+    // std::cout<< vth << endl;
     //publish the message
     odom_pub.publish(odom);
 

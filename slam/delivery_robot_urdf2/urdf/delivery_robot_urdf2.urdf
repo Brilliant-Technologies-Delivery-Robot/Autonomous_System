@@ -5,7 +5,7 @@
 <robot
   name="delivery_robot_urdf2">
   <!-- add virtual joint between base_link and base_footprint-->
-  <link
+  <!-- <link
     name="base_footprint" />
   <joint
     name="base_footprint_joint"
@@ -17,7 +17,7 @@
       link="base_footprint" />
     <child
       link="base_link" />
-  </joint>
+  </joint> -->
   <link
     name="base_link">
     <inertial>
@@ -228,18 +228,19 @@
     </sensor>
   </gazebo>
 
-  <!-- <gazebo>
+
+  <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
     </plugin>
-  </gazebo> -->
+  </gazebo>
 
-  <!-- <transmission name="tran1">
+  <transmission name="tran1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="right_wheel_joint">
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
     </joint>
     <actuator name="motor1">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <!-- <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface> -->
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -250,13 +251,13 @@
       <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
     </joint>
     <actuator name="motor2">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <!-- <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface> -->
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission> -->
+  </transmission>
 
   <!-- add differential drive plugin -->
-  <gazebo>
+  <!-- <gazebo>
     <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
       <leftJoint>left_wheel_joint</leftJoint>
       <rightJoint>right_wheel_joint</rightJoint>
@@ -266,7 +267,7 @@
       <commandTopic>cmd_vel</commandTopic>
       <odometryTopic>odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
-      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <robotBaseFrame>base_link</robotBaseFrame>
       <publishWheelTF>true</publishWheelTF>
       <publishTf>true</publishTf>
       <publishOdomTF>true</publishOdomTF>
@@ -274,6 +275,6 @@
       <updateRate>100.0</updateRate>
       <publishWheelJointState>false</publishWheelJointState>
     </plugin>
-  </gazebo>
+  </gazebo> -->
 
 </robot>
