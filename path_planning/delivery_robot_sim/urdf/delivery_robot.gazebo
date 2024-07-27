@@ -2,6 +2,49 @@
 <robot>
 
   <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <updateRate>10.0</updateRate>
+      <robotNamespace>/delivery_robot</robotNamespace>
+      
+      <!-- Joint Names -->
+      <leftJoint>left_wheel_joint</leftJoint>
+      <rightJoint>right_wheel_joint</rightJoint>
+      
+      <!-- Physical Parameters -->
+      <wheelSeparation>0.45</wheelSeparation>
+      <wheelDiameter>0.13</wheelDiameter>
+      
+      <!-- Robot Frame -->
+      <robotBaseFrame>robot_footprint</robotBaseFrame>
+      
+      <!-- Control Parameters -->
+      <torque>10</torque>
+      
+      <!-- ROS Topics -->
+      <cmdVelTopic>cmd_vel</cmdVelTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <commandTopic>cmd_vel</commandTopic>
+      <publishWheelTF>false</publishWheelTF>
+      <publishOdomTF>true</publishOdomTF>
+      <publishWheelJointState>true</publishWheelJointState>
+      <wheelAcceleration>0.5</wheelAcceleration>
+      <wheelTorque>10</wheelTorque>
+      <publishTf>true</publishTf>
+      <broadcastTF>true</broadcastTF>
+
+
+      <!-- Covariance -->
+      <covariance_x>0.0001</covariance_x>
+      <covariance_y>0.0001</covariance_y>
+      <covariance_yaw>0.01</covariance_yaw>
+      <rosDebugLevel>0</rosDebugLevel> <!-- 0 for no debug info, 1 for basic, 2 for detailed -->
+    </plugin>
+  </gazebo>
+  
+
+<!-- 
+  <gazebo>
     
     <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
       <updateRate>10.0</updateRate>
@@ -33,7 +76,7 @@
     </plugin>
 
   </gazebo>
-
+-->
   <!-- camera -->
 <!--  <gazebo reference="camera">
     <sensor type="camera" name="camera1">
