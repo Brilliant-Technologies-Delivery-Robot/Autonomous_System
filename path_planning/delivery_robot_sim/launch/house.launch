@@ -14,7 +14,7 @@
 	<include file="$(find delivery_robot_sim)/launch/robot_description.launch"/>
 
 	<!-- World File -->
-	<arg name="world_file" default="$(find delivery_robot_sim)/worlds/small_house.world"/>
+	<arg name="world_file" default="$(find delivery_robot_sim)/worlds/house.world"/>
 
 	<!-- Launch Gazebo World -->
 	<include file="$(find gazebo_ros)/launch/empty_world.launch">
