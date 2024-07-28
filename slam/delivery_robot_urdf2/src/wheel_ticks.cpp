@@ -98,11 +98,9 @@ int main(int argc, char **argv)
     {
       linear_distance = (distance_left + distance_right) / 2.0;
       angular_distance = (distance_right - distance_left) / wheel_base;
-
       double delta_x = linear_distance * cos(th);
       double delta_y = linear_distance * sin(th);
       double delta_th = angular_distance;
-
       x += delta_x;
       y += delta_y;
       th += delta_th;
