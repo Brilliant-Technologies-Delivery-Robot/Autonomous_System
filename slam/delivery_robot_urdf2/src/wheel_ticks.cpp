@@ -7,92 +7,108 @@
 
 using namespace std;
 
-
-
 long _PreviousLeftEncoderCounts = 0;
 long _PreviousRightEncoderCounts = 0;
 ros::Time current_time_encoder, last_time_encoder;
 double DistancePerCount = (2* 3.14159265 * 0.065) / 1320;
-
-const double wheel_base = 0.45; // Distance between the wheels (in meters)
+double TicksPerMeter = 3235;
+const double wheel_base = 0.45;    // Distance between the wheels (in meters)
 const double wheel_radius = 0.065; // Radius of the wheels (in meters)
 
-ros::Subscriber sub;
+ros::Subscriber ticks_sub;
+ros::Subscriber velocity_sub;
 ros::Publisher odom_pub;
 
-double x = 0.0;
-double y = 0.0;
-double th = 0.0;
-double _PPSx=0.0;
-double _PPSy=0.0;
-double vx = 0.0;
-double vy = 0.0;
-double vth = 0.0;
+double x = 0.0;  // x position (m)
+double y = 0.0;  // y position (m)
+double th = 0.0; // theta (rad)
+double _PPSl=0.0;
+double _PPSr=0.0;
+double vl = 0.0;  
+double vr = 0.0; 
+double linear_velocity = 0.0;
+double angular_velocity = 0.0;
+double linear_distance = 0.0;
+double angular_distance = 0.0;
 double deltaLeft = 0.0;
 double deltaRight = 0.0;
+double distance_left = 0.0;
+double distance_right = 0.0;
+bool use_wheel_speeds = false;
 
-void WheelCallback(const geometry_msgs::Vector3::ConstPtr& velocities)
+void WheelSpeedCallback(const geometry_msgs::Vector3::ConstPtr& velocities)
 {
   current_time_encoder = ros::Time::now();
-
-  _PPSx = velocities->x;
-  _PPSy = velocities->y ;
-  vx=_PPSx * DistancePerCount;
-  vy=_PPSy * DistancePerCount;
- /* deltaLeft = ticks->x - _PreviousLeftEncoderCounts;
-  deltaRight = ticks->y - _PreviousRightEncoderCounts;
-
-  vx = deltaLeft * DistancePerCount; // (current_time_encoder - last_time_encoder).toSec();
-  vy = deltaRight * DistancePerCount; // (current_time_encoder - last_time_encoder).toSec();*/  
-  //std::cout<< "vx" << endl;
-  //std::cout<< vx << endl;
-  //std::cout<< "vy" << endl;
-  //std::cout<< vy << endl;
-
- // _PreviousLeftEncoderCounts = ticks->x;
- // _PreviousRightEncoderCounts = ticks->y;
+  _PPSl = velocities->x;
+  _PPSr = velocities->y ;
+  vl= _PPSl * DistancePerCount; // left wheel linear velocity
+  vr= _PPSr * DistancePerCount; // right wheel linear velocity
   last_time_encoder = current_time_encoder;
-  
-  //std::cout<< "wheel_encoders_msg" ;
+
+  ROS_INFO("WheelSpeedCallback: _PPSl: %f, _PPSr: %f, vl: %f, vr: %f", _PPSl, _PPSr, vl, vr);
+}
+
+void WheelTicksCallback(const geometry_msgs::Vector3::ConstPtr& ticks)
+{
+  current_time_encoder = ros::Time::now();
+  deltaLeft = ticks->x - _PreviousLeftEncoderCounts;
+  deltaRight = ticks->y - _PreviousRightEncoderCounts;
+  distance_left = deltaLeft / TicksPerMeter;
+  distance_right = deltaRight / TicksPerMeter;
+  _PreviousLeftEncoderCounts = ticks->x;
+  _PreviousRightEncoderCounts = ticks->y;
+  last_time_encoder = current_time_encoder;
+
+  ROS_INFO("WheelTicksCallback: deltaLeft: %f, deltaRight: %f, distance_left: %f, distance_right: %f", deltaLeft, deltaRight, distance_left, distance_right);
 }
 
 int main(int argc, char **argv)
 {
-
-//  cout<< "inside_main" ;
   ros::init(argc, argv, "odometry_publisher");
   ros::NodeHandle n;
-  sub = n.subscribe("wheel_encoder", 100, WheelCallback);
+  ticks_sub = n.subscribe("wheel_encoder", 100, WheelTicksCallback);
+  velocity_sub = n.subscribe("wheel_speed", 100, WheelSpeedCallback);
   odom_pub = n.advertise<nav_msgs::Odometry>("odom", 1000);   
   tf::TransformBroadcaster odom_broadcaster;
 
   ros::Time current_time, last_time;
   current_time = ros::Time::now();
   last_time = ros::Time::now();
+  ros::Rate r(10.0);
 
-  ros::Rate r(1.0);
   while(ros::ok()) {
-    //cout<<"inside ros ok";
     current_time = ros::Time::now();
 
-    double linear_velocity = (vx + vy) * wheel_radius / 2.0;
-    double vth = (vx - vy) * wheel_radius / wheel_base;
-    //compute odometry in a typical way given the velocities of the robot
-    double dt = (current_time - last_time).toSec();
-    // std::cout<< "dt" << endl;
-    // std::cout<< dt << endl;
-    double delta_x = linear_velocity * cos(th) * dt;
-    double delta_y = linear_velocity * sin(th) * dt;
-    double delta_th = vth * dt;
-    // std::cout<< "delta_th" << endl;
-    // std::cout<< delta_th << endl;
-    x += delta_x;
-    y += delta_y;
-    th += delta_th;
-    // std::cout << "x: " << x << endl ;
-    // std::cout << "y: " << y << endl ;
-    // std::cout<< "th" << endl;
-    // std::cout<< th << endl;
+    if (use_wheel_speeds == true) 
+    {
+      linear_velocity = (vr + vl) / 2.0;
+      angular_velocity = (vr - vl) / wheel_base;
+      double dt = (current_time - last_time).toSec();
+      double delta_x = linear_velocity * cos(th) * dt;
+      double delta_y = linear_velocity * sin(th) * dt;
+      double delta_th = angular_velocity * dt;
+      x += delta_x;
+      y += delta_y;
+      th += delta_th;
+
+      ROS_INFO("x: %f, y: %f, th: %f", x, y, th);
+    }
+
+    else
+    {
+      linear_distance = (distance_left + distance_right) / 2.0;
+      angular_distance = (distance_right - distance_left) / wheel_base;
+
+      double delta_x = linear_distance * cos(th);
+      double delta_y = linear_distance * sin(th);
+      double delta_th = angular_distance;
+
+      x += delta_x;
+      y += delta_y;
+      th += delta_th;
+
+      ROS_INFO("x: %f, y: %f, th: %f", x, y, th);
+    }
 
     //since all odometry is 6DOF we'll need a quaternion created from yaw
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
@@ -121,17 +137,12 @@ int main(int argc, char **argv)
     odom.pose.pose.position.y = y;
     odom.pose.pose.position.z = 0.0;
     odom.pose.pose.orientation = odom_quat;
-    
-    // std::cout << "odom_quat" << endl;
-    // std::cout << odom_quat << endl;
    
     //set the velocity
     odom.child_frame_id = "base_link";
-    odom.twist.twist.linear.x = vx;
-    odom.twist.twist.linear.y = vy;
-    odom.twist.twist.angular.z = vth;
-    // std::cout<< "vth" << endl;
-    // std::cout<< vth << endl;
+    odom.twist.twist.linear.x = linear_velocity;
+    odom.twist.twist.angular.z = angular_velocity;
+
     //publish the message
     odom_pub.publish(odom);
 
