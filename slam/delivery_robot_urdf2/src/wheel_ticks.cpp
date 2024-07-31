@@ -17,6 +17,7 @@ const double wheel_radius = 0.065; // Radius of the wheels (in meters)
 
 ros::Subscriber ticks_sub;
 ros::Subscriber velocity_sub;
+ros::Subscriber odom_sub;
 ros::Publisher odom_pub;
 
 double x = 0.0;  // x position (m)
@@ -62,12 +63,22 @@ void WheelTicksCallback(const geometry_msgs::Vector3::ConstPtr& ticks)
   ROS_INFO("WheelTicksCallback: deltaLeft: %f, deltaRight: %f, distance_left: %f, distance_right: %f", deltaLeft, deltaRight, distance_left, distance_right);
 }
 
+void OdometryCallback(const geometry_msgs::Vector3::ConstPtr& odom_msg)
+{
+  x = odom_msg->x;
+  y = odom_msg->y;
+  th = odom_msg->z;
+
+  ROS_INFO("OdometryCallback: x: %f, y: %f, th: %f", x, y, th);
+}
+
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "odometry_publisher");
   ros::NodeHandle n;
   ticks_sub = n.subscribe("wheel_encoder", 100, WheelTicksCallback);
   velocity_sub = n.subscribe("wheel_speed", 100, WheelSpeedCallback);
+  odom_sub = n.subscribe("position", 100, OdometryCallback);
   odom_pub = n.advertise<nav_msgs::Odometry>("odom", 1000);   
   tf::TransformBroadcaster odom_broadcaster;
 
@@ -79,34 +90,34 @@ int main(int argc, char **argv)
   while(ros::ok()) {
     current_time = ros::Time::now();
 
-    if (use_wheel_speeds == true) 
-    {
-      linear_velocity = (vr + vl) / 2.0;
-      angular_velocity = (vr - vl) / wheel_base;
-      double dt = (current_time - last_time).toSec();
-      double delta_x = linear_velocity * cos(th) * dt;
-      double delta_y = linear_velocity * sin(th) * dt;
-      double delta_th = angular_velocity * dt;
-      x += delta_x;
-      y += delta_y;
-      th += delta_th;
+    // if (use_wheel_speeds == true) 
+    // {
+    //   linear_velocity = (vr + vl) / 2.0;
+    //   angular_velocity = (vr - vl) / wheel_base;
+    //   double dt = (current_time - last_time).toSec();
+    //   double delta_x = linear_velocity * cos(th) * dt;
+    //   double delta_y = linear_velocity * sin(th) * dt;
+    //   double delta_th = angular_velocity * dt;
+    //   x += delta_x;
+    //   y += delta_y;
+    //   th += delta_th;
 
-      ROS_INFO("x: %f, y: %f, th: %f", x, y, th);
-    }
+    //   ROS_INFO("x: %f, y: %f, th: %f", x, y, th);
+    // }
 
-    else
-    {
-      linear_distance = (distance_left + distance_right) / 2.0;
-      angular_distance = (distance_right - distance_left) / wheel_base;
-      double delta_x = linear_distance * cos(th);
-      double delta_y = linear_distance * sin(th);
-      double delta_th = angular_distance;
-      x += delta_x;
-      y += delta_y;
-      th += delta_th;
+    // else
+    // {
+    //   linear_distance = (distance_left + distance_right) / 2.0;
+    //   angular_distance = (distance_right - distance_left) / wheel_base;
+    //   double delta_x = linear_distance * cos(th);
+    //   double delta_y = linear_distance * sin(th);
+    //   double delta_th = angular_distance;
+    //   x += delta_x;
+    //   y += delta_y;
+    //   th += delta_th;
 
-      ROS_INFO("x: %f, y: %f, th: %f", x, y, th);
-    }
+    //   ROS_INFO("x: %f, y: %f, th: %f", x, y, th);
+    // }
 
     //since all odometry is 6DOF we'll need a quaternion created from yaw
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);

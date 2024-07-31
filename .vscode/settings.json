@@ -6,5 +6,6 @@
     "python.analysis.extraPaths": [
         "/home/ramzy/roar_ws/devel/lib/python3/dist-packages",
         "/opt/ros/noetic/lib/python3/dist-packages"
-    ]
+    ],
+    "cmake.sourceDirectory": "/home/ramzy/delivery_robot/src/Autonomous_System/navigation_control"
 }
