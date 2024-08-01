@@ -5,7 +5,7 @@
 <robot
   name="delivery_robot_urdf2">
   <!-- add virtual joint between base_link and base_footprint-->
-  <!-- <link
+  <link
     name="base_footprint" />
   <joint
     name="base_footprint_joint"
@@ -17,7 +17,7 @@
       link="base_footprint" />
     <child
       link="base_link" />
-  </joint> -->
+  </joint>
   <link
     name="base_link">
     <inertial>
@@ -228,6 +228,13 @@
     </sensor>
   </gazebo>
 
+  <link name="imu_link"/>
+
+  <joint name="imu_joint" type="fixed">
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+  </joint>
 
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">

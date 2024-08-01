@@ -126,7 +126,7 @@ int main(int argc, char **argv)
     geometry_msgs::TransformStamped odom_trans;
     odom_trans.header.stamp = current_time;
     odom_trans.header.frame_id = "odom";
-    odom_trans.child_frame_id = "base_link";
+    odom_trans.child_frame_id = "base_footprint";
 
     odom_trans.transform.translation.x = x;
     odom_trans.transform.translation.y = y;
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
     odom_trans.transform.rotation = odom_quat;
 
     //send the transform
-    odom_broadcaster.sendTransform(odom_trans);
+    // odom_broadcaster.sendTransform(odom_trans);
 
     //next, we'll publish the odometry message over ROS
     nav_msgs::Odometry odom;
@@ -146,9 +146,16 @@ int main(int argc, char **argv)
     odom.pose.pose.position.y = y;
     odom.pose.pose.position.z = 0.0;
     odom.pose.pose.orientation = odom_quat;
+
+    odom.pose.covariance[0] = 0.01;
+    odom.pose.covariance[7] = 0.01;
+    odom.pose.covariance[14] = 0.01;
+    odom.pose.covariance[21] = 0.01;
+    odom.pose.covariance[28] = 0.01;
+    odom.pose.covariance[35] = 0.01;
    
     //set the velocity
-    odom.child_frame_id = "base_link";
+    odom.child_frame_id = "base_footprint";
     odom.twist.twist.linear.x = linear_velocity;
     odom.twist.twist.angular.z = angular_velocity;
 

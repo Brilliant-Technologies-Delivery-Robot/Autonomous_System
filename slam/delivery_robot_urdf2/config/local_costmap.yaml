@@ -1,4 +1,4 @@
-global_frame: odom
+global_frame: odom_ekf
 rolling_window: true
 width: 1.5
 height: 1.5
