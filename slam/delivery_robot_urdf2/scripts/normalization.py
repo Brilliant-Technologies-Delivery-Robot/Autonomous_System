@@ -26,7 +26,7 @@ def imu_callback(data):
     normalized_quaternion = normalize_quaternion(data.orientation)
     data.orientation = normalized_quaternion
     data.orientation_covariance = [0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1]
-    print(data.orientation.x, data.orientation.y, euler_from_quaternion([data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w])[2])
+    print("x: ", data.orientation.x, ", y: ", data.orientation.y, ", yaw:", euler_from_quaternion([data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w])[2])
     imu_pub.publish(data)
 
 while not rospy.is_shutdown():
