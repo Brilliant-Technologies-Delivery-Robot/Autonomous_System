@@ -1,0 +1,11 @@
+<!-- 
+    Safety controller
+-->
+<launch>
+  <node pkg="nodelet" type="nodelet" name="delivery_robot" args="load delivery_robot/SafetyControllerNodelet mobile_base_nodelet_manager">
+    <remap from="delivery_robot/cmd_vel" to="cmd_vel_mux/input/safety_controller"/>
+    <remap from="delivery_robot/events/bumper" to="mobile_base/events/bumper"/>
+    <remap from="delivery_robot/events/cliff" to="mobile_base/events/cliff"/>
+    <remap from="delivery_robot/events/wheel_drop" to="mobile_base/events/wheel_drop"/>
+  </node>
+</launch>
