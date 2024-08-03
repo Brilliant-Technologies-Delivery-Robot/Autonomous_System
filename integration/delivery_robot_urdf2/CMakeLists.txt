@@ -36,12 +36,5 @@ foreach(dir config launch meshes urdf)
 		DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
 endforeach(dir)
 
-add_executable(odom_simulation src/odometry_publisher_sim.cpp)
-target_link_libraries(odom_simulation ${catkin_LIBRARIES})
-
 add_executable(odom src/wheel_ticks.cpp)
 target_link_libraries(odom ${catkin_LIBRARIES})
-
-add_executable(hardware_interface src/hardware_interface.cpp)
-target_link_libraries(hardware_interface ${catkin_LIBRARIES})
-target_include_directories(hardware_interface PRIVATE include)
