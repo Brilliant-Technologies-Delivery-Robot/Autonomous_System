@@ -3,11 +3,12 @@ import math
 import rospy
 from std_msgs.msg import Float64
 from geometry_msgs.msg import Pose,Vector3
-from nav_msgs.msg import Odometry
+from nav_msgs.msg import Odometry,Path
 from gazebo_msgs.msg import ModelStates
 from tf.transformations import euler_from_quaternion
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 class Control:
     def __init__(self):
@@ -26,12 +27,12 @@ class Control:
         self.vel_msg = Vector3()
 
         self.rate = rospy.Rate(10)
-        self.kp = 15
+        self.kp = 20
         self.ki = 1.2
         self.kd = 0.1
         self.dist_ld = 0.2
-        self.min_ld = 0.2 # Minimum lookahead distance
-        self.max_ld = 1  # Maximum lookahead distance
+        self.min_ld = 2# Minimum lookahead distance
+        self.max_ld = 3 # Maximum lookahead distance
 
         self.dt = 0.1
         self.currentx = 0.0
@@ -48,14 +49,222 @@ class Control:
         self.error_values = []
         self.robot_trajectory = []
         
-        # self.waypoints =  [(0,0),(0,0.1),(0,0.2),(0,0.3),(0,0.4),(0,0.5),(0.0,0.6),(0.0,0.7),(0,0.9),(0.0,1),(0,1.1),(0,1.2),(0,1.3),(0,1.4),(0,1.5),(0,1.6),(0,1.7),(0,1.8),(0,1.9), (0,2)]
+        # self.waypoints=[(0,0),(-2,0)]
+
+        # self.waypoints =  [(0,0),(0,0.1),(0,0.2),(0,0.3),(0,0.4),(0,0.5),(0.0,0.6),(0.0,0.7),(0,0.9),(0.0,1),(0,1.1),(0,1.2),(0,1.3),(0,1.4),(0,1.5),(0,1.6),(0,1.7),(0,1.8),(0,1.9), (0,2),(1,2)]
         # self.waypoints = [(point[1], 0) for point in self.waypoints]
         # self.waypoints = [(-x, -y) for x, y in self.waypoints]
 
-        self.waypoints= [(0,0),(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(7,1),(7,2),(6,2),(5,2),(4,2),(3,2),(2,2),(1,2),(0.5,2),(0.5,3),(0.5,4),(1,4),(2,4),(4,4), (7,4),(7,6),(5,10),(3,11),(0,11)]
- 
-
+        # self.waypoints= [(1,0),(1.5,0),(2,0),(2,-1),(2,-2),(2,-2.5),(3,-2.5),(3,-2),(3,-1),(3,0),(2,0),(1,0),(0,0)]
+        # self.waypoints=[(0.5,0),(1,0),(1.5,0),(2,0),(2,1)]
+        self.waypoints= [
+            (0, 0), (0.5, 0), (1, 0), (1.5, 0), (2, 0), (2.5, 0), (3, 0), (3.5, 0), 
+            (4, 0), (4.5, 0), (5, 0), (5.5, 0), (6, 0), (6.5, 0), (7, 0), 
+            (7, 0.5), (7, 1), (7, 1.5), (7, 2), 
+            (6.5, 2), (6, 2), (5.5, 2), (5, 2), (4.5, 2), (4, 2), (3.5, 2), (3, 2), 
+            (2.5, 2), (2, 2), (1.5, 2), (1, 2), (0.75, 2), (0.5, 2), 
+            (0.5, 2.5), (0.5, 3), (0.5, 3.5), (0.5, 4), 
+            (0.75, 4), (1, 4), (1.5, 4), (2, 4), (3, 4), (4, 4), (5, 4), (6, 4), 
+            (7, 4), (7, 4.5), (7, 5), (7, 5.5), (7, 6), 
+            (6.5, 7), (5, 10), 
+            (4.5, 11), (2.25, 11), (0, 11)
+        ]
         # self.waypoints= [
+
+        # (0, 0),
+        # (0.025, 0.01),
+        # (0.05, 0.02),
+        # (0.075, 0.03),
+        # (0.1, 0.04),
+        # (0.125, 0.05),
+        # (0.15, 0.06),
+        # (0.175, 0.07),
+        # (0.2, 0.08),
+        # (0.225, 0.09),
+        # (0.25, 0.1),
+        # (0.275, 0.11),
+        # (0.3, 0.12),
+        # (0.325, 0.13),
+        # (0.35, 0.14),
+        # (0.375, 0.15),
+        # (0.4, 0.16),
+        # (0.425, 0.17),
+        # (0.45, 0.18),
+        # (0.475, 0.19),
+        # (0.5, 0.2),
+        # (0.55, 0.23),
+        # (0.6, 0.26),
+        # (0.65, 0.29),
+        # (0.7, 0.32),
+        # (0.75, 0.35),
+        # (0.8, 0.38),
+        # (0.85, 0.41),
+        # (0.9, 0.44),
+        # (0.95, 0.47),
+        # (1, 0.5),
+        # (1.05, 0.55),
+        # (1.1, 0.6),
+        # (1.15, 0.65),
+        # (1.2, 0.7),
+        # (1.25, 0.75),
+        # (1.3, 0.8),
+        # (1.35, 0.85),
+        # (1.4, 0.9),
+        # (1.45, 0.95),
+        # (1.5, 1),
+        # (1.55, 1.2),
+        # (1.6, 1.4),
+        # (1.65, 1.6),
+        # (1.7, 1.8),
+        # (1.75, 2),
+        # (1.8, 2.2),
+        # (1.85, 2.4),
+        # (1.9, 2.6),
+        # (1.95, 2.8),
+        # (2, 3),
+        # (2.05, 3.2),
+        # (2.1, 3.4),
+        # (2.15, 3.6),
+        # (2.2, 3.8),
+        # (2.25, 4),
+        # (2.3, 4),
+        # (2.35, 4),
+        # (2.4, 4),
+        # (2.45, 4),
+        # (2.5, 4),
+        # (2.55, 4),
+        # (2.6, 4),
+        # (2.65, 4),
+        # (2.7, 4),
+        # (2.75, 4),
+        # (2.8, 4),
+        # (2.85, 4),
+        # (2.9, 4),
+        # (2.95, 4),
+        # (3, 4),
+        # (3.05, 4),
+        # (3.1, 4),
+        # (3.15, 4),
+        # (3.2, 4),
+        # (3.25, 4),
+        # (3.3, 4),
+        # (3.35, 4),
+        # (3.4, 4),
+        # (3.45, 4),
+        # (3.5, 4),
+        # (3.55, 4),
+        # (3.6, 4),
+        # (3.65, 4),
+        # (3.7, 4),
+        # (3.75, 4),
+        # (3.8, 4),
+        # (3.85, 4),
+        # (3.9, 4),
+        # (3.95, 4),
+        # (4, 4),
+        # (4.05, 4),
+        # (4.1, 4),
+        # (4.15, 4),
+        # (4.2, 4),
+        # (4.25, 4),
+        # (4.3, 4),
+        # (4.35, 4),
+        # (4.4, 4),
+        # (4.45, 4),
+        # (4.5, 4),
+        # (4.55, 4.1),
+        # (4.6, 4.2),
+        # (4.65, 4.3),
+        # (4.7, 4.4),
+        # (4.75, 4.5),
+        # (4.8, 4.6),
+        # (4.85, 4.7),
+        # (4.9, 4.8),
+        # (4.95, 4.9),
+        # (5, 5),
+        # (5.1, 5.1),
+        # (5.2, 5.2),
+        # (5.3, 5.3),
+        # (5.4, 5.4),
+        # (5.5, 5.5),
+        # (5.6, 5.6),
+        # (5.7, 5.7),
+        # (5.8, 5.8),
+        # (5.9, 5.9),
+        # (6, 6),
+        # (6.1, 6.05),
+        # (6.2, 6.1),
+        # (6.3, 6.15),
+        # (6.4, 6.2),
+        # (6.5, 6.25),
+        # (6.6, 6.3),
+        # (6.7, 6.35),
+        # (6.8, 6.4),
+        # (6.9, 6.45),
+        # (7, 6.5),
+        # (7.1, 6.55),
+        # (7.2, 6.6),
+        # (7.3, 6.65),
+        # (7.4, 6.7),
+        # (7.5, 6.75),
+        # (7.6, 6.8),
+        # (7.7, 6.85),
+        # (7.8, 6.9),
+        # (7.9, 6.95),
+        # (8, 7),
+        # (8.1, 7.05),
+        # (8.2, 7.1),
+        # (8.3, 7.15),
+        # (8.4, 7.2),
+        # (8.5, 7.25),
+        # (8.6, 7.3),
+        # (8.7, 7.35),
+        # (8.8, 7.4),
+        # (8.9, 7.45),
+        # (9, 7.5),
+        # (9.05, 7.55),
+        # (9.1, 7.6),
+        # (9.15, 7.65),
+        # (9.2, 7.7),
+        # (9.25, 7.75),
+        # (9.3, 7.8),
+        # (9.35, 7.85),
+        # (9.4, 7.9),
+        # (9.45, 7.95),
+        # (9.5, 8),
+        # (9.55, 8.05),
+        # (9.6, 8.1),
+        # (9.65, 8.15),
+        # (9.7, 8.2),
+        # (9.75, 8.25),
+        # (9.8, 8.3),
+        # (9.85, 8.35),
+        # (9.9, 8.4),
+        # (9.95, 8.45),
+        # (10, 8.5),
+        # (10.025, 8.525),
+        # (10.05, 8.55),
+        # (10.075, 8.575),
+        # (10.1, 8.6),
+        # (10.125, 8.625),
+        # (10.15, 8.65),
+        # (10.175, 8.675),
+        # (10.2, 8.7),
+        # (10.225, 8.725),
+        # (10.25, 8.75),
+        # (10.275, 8.775),
+        # (10.3, 8.8),
+        # (10.325, 8.825),
+        # (10.35, 8.85),
+        # (10.375, 8.875),
+        # (10.4, 8.9),
+        # (10.425, 8.925),
+        # (10.45, 8.95),
+        # (10.475, 8.975),
+        # (10.5, 9),
+
+        # ]
+
         #         (0, 0),         # Starting point
         #         (2, 0.5),       # Intermediate point
         #         (3, 1),         # Intermediate point
@@ -233,6 +442,7 @@ class Control:
         (roll, pitch, yaw) = euler_from_quaternion(orientation_list)
         self.robot_theta = yaw
         self.robot_trajectory.append((self.currentx, self.currenty))
+        
 
     # def tuple_list_callback(self, msg):
     #     self.waypoints = [(msg.a[i], msg.b[i]) for i in range(msg.length)]
@@ -241,20 +451,23 @@ class Control:
     #     self.waypoints.reverse()
     #     self.update_waypoints_plot()
 
-    def map_velocity(self,velocity):
-        # Clamping the value to be within the range -1.57 to 1.57
+    def map_velocity(self, velocity):
+        # Clamping the value to be within the range -self.max_velocity to self.max_velocity
         velocity = min(max(velocity, -self.max_velocity), self.max_velocity)
         
-        if velocity < 0:
-            # Mapping negative values from -1.57 to 0 to the range 0 to 61
-            return int(((velocity + self.max_velocity) / self.max_velocity) * 61)
+        if velocity == 0:
+            return 64  # Return 64 if the velocity is exactly 0
+        elif velocity < 0:
+            # Mapping negative values from -self.max_velocity to 0 to the range 32 to 61
+            return int(((velocity + self.max_velocity) / self.max_velocity) * (61 - 32) + 32)
         else:
-            # Mapping positive values from 0 to 1.57 to the range 67 to 127
-            return int((velocity / self.max_velocity) * 60 + 67)
+            # Mapping positive values from 0 to self.max_velocity to the range 67 to 95
+            return int((velocity / self.max_velocity) * (95 - 67) + 67)
+
 
     def purePursuit(self):
         if self.current_waypoint_index >= len(self.waypoints):
-            rospy.loginfo("Goal reached")
+            rospy.loginfo("Goal Reached")
             self.plot_trajectory()
             return
 
@@ -262,18 +475,22 @@ class Control:
 
         goal_x, goal_y = self.waypoints[-1]
         distance_to_goal = math.hypot(goal_x - self.currentx, goal_y - self.currenty)
-
-        if distance_to_goal < 0.05:  # If the robot is close to the goal
+        e = math.hypot(lookahead_point[0] - self.currentx, lookahead_point[1] - self.currenty)
+        
+        # Check if the robot is close to the goal
+        if e < 0.1:
             rospy.loginfo("Goal reached")
             Vr = 0.0
             Vl = 0.0
-            self.vel_msg.x = Vr 
-            self.vel_msg.y = Vl 
-
+            
+            self.vel_msg.x = self.map_velocity(Vr) 
+            self.vel_msg.y = self.map_velocity(Vl) 
             self.vel_pub.publish(self.vel_msg)
 
-            self.velocitylf_publisher.publish(Vr)
-            self.velocityrf_publisher.publish(Vl)
+            self.velocitylf_publisher.publish(Vl)
+            self.velocityrf_publisher.publish(Vr)
+
+            rospy.loginfo(f"Vr: {Vr}, Vl: {Vl}, Mapped Vr: {self.vel_msg.x}, Mapped Vl: {self.vel_msg.y}")
 
             self.plot_trajectory()
             return
@@ -282,28 +499,27 @@ class Control:
         angle_diff = angle_to_point - self.robot_theta
         angle_diff = math.atan2(math.sin(angle_diff), math.cos(angle_diff))  # Normalize the angle
 
-        # If the waypoint is behind the robot, rotate in place
-        if abs(angle_diff) > math.pi / 2:
+        # Adjusting the threshold for rotation based on the distance to the next waypoint
+        distance_to_next_waypoint = math.hypot(self.waypoints[self.current_waypoint_index][0] - self.currentx, 
+                                                self.waypoints[self.current_waypoint_index][1] - self.currenty)
+        
+        if abs(angle_diff) > math.pi / 2 and distance_to_next_waypoint > 0.5:  # Adjust the distance threshold as needed
             rospy.loginfo("Waypoint is behind the robot, rotating in place")
             if angle_diff > 0:
                 Vr = 2.5
                 Vl = -2.5
-
-                self.vel_msg.x = self.map_velocity(Vr) 
-                self.vel_msg.y = self.map_velocity(Vl) 
-
             else:
                 Vr = -2.5
                 Vl = 2.5
 
-                self.vel_msg.x = self.map_velocity(Vr) 
-                self.vel_msg.y = self.map_velocity(Vl) 
-
-
+            self.vel_msg.x = self.map_velocity(Vr) 
+            self.vel_msg.y = self.map_velocity(Vl) 
             self.vel_pub.publish(self.vel_msg)
 
             self.velocitylf_publisher.publish(Vl)
             self.velocityrf_publisher.publish(Vr)
+
+            rospy.loginfo(f"Vr: {Vr}, Vl: {Vl}, Mapped Vr: {self.vel_msg.x}, Mapped Vl: {self.vel_msg.y}")
             return
 
         curvature = 2 * math.sin(angle_diff) / self.dist_ld
@@ -330,9 +546,10 @@ class Control:
         self.velocityrf_publisher.publish(Vr)
 
         self.vel_pub.publish(self.vel_msg)
-        print("Vr: ", Vr, "Vl: ", Vl , "Mapped Vr: ", self.vel_msg.x ,"Mapped Vl: ", self.vel_msg.y )
+        rospy.loginfo(f"Vr: {Vr}, Vl: {Vl}, Mapped Vr: {self.vel_msg.x}, Mapped Vl: {self.vel_msg.y}")
 
         self.plot_trajectory()
+
 
     def find_lookahead_point(self):
         lookahead_point = None
@@ -345,7 +562,7 @@ class Control:
                 if distance >= ld:
                     lookahead_point = point
                     self.current_waypoint_index = i
-                    rospy.loginfo(f"Selected lookahead point {lookahead_point} at distance {distance}, ld={ld}")
+                    rospy.loginfo(f"Selected lookahead point {lookahead_point} at distance {distance}")
                     break
             if lookahead_point:
                 break
