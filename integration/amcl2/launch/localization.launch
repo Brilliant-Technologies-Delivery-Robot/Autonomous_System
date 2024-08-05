@@ -15,6 +15,6 @@
   <include file="$(find amcl2)/launch/amcl.launch"/>
 
   <!-- rviz -->
-  <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find delivery_robot_urdf2)/config/rviz_amcl.rviz"/>  
+  <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find delivery_robot_urdf2)/config/rviz_integration.rviz"/>  
 
 </launch>
