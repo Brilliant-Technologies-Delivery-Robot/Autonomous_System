@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2.7
 import rospy
 from sensor_msgs.msg import Imu
 from tf.transformations import euler_from_quaternion
