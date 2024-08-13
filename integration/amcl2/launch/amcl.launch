@@ -3,7 +3,7 @@
   <!-- Map Server Arguments -->
   <!--  <arg name="map_file" default="$(env TURTLEBOT_GAZEBO_MAP_FILE)"/> -->
 
-  <!-- <arg name="map_file" default="$(find amcl2)/maps/map.yaml"/> -->
+   <!--<arg name="map_file" default="$(find amcl2)/maps/room1withlandmarksV2.yaml"/>-->
   <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot3_slam)/maps/map.yaml" /> -->
 
   <!-- Arguments -->

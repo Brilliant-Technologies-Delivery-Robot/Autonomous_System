@@ -5,11 +5,10 @@
     <param name="publish_frequency" value="50.0" />
   </node>
 
-  <node
+    <node
   name="joint_state_publisher"
   pkg="joint_state_publisher"
   type="joint_state_publisher" />
-
   <!-- define robot describtion -->
   <param name="robot_description" textfile="$(find delivery_robot_urdf2)/urdf/delivery_robot_urdf2.urdf" />
 
