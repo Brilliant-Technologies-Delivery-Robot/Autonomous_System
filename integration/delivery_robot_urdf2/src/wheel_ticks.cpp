@@ -147,12 +147,12 @@ int main(int argc, char **argv)
     odom.pose.pose.position.z = 0.0;
     odom.pose.pose.orientation = odom_quat;
 
-    odom.pose.covariance[0] =  0.01;
-    odom.pose.covariance[7] =  0.01;
-    odom.pose.covariance[14] = 0.01;
-    odom.pose.covariance[21] = 0.1;
-    odom.pose.covariance[28] = 0.1;
-    odom.pose.covariance[35] = 0.1;
+    odom.pose.covariance[0] =  0.2;
+    odom.pose.covariance[7] =  0.2;
+    odom.pose.covariance[14] = 0.2;
+    odom.pose.covariance[21] = 0.2;
+    odom.pose.covariance[28] = 0.2;
+    odom.pose.covariance[35] = 0.2;
    
     //set the velocity
     odom.child_frame_id = "base_footprint";
