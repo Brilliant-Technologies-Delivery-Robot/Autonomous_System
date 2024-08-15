@@ -46,7 +46,7 @@ void WheelSpeedCallback(const geometry_msgs::Vector3::ConstPtr& velocities)
   vr= _PPSr * DistancePerCount; // right wheel linear velocity
   last_time_encoder = current_time_encoder;
 
-  ROS_INFO("WheelSpeedCallback: _PPSl: %f, _PPSr: %f, vl: %f, vr: %f", _PPSl, _PPSr, vl, vr);
+  // ROS_INFO("WheelSpeedCallback: _PPSl: %f, _PPSr: %f, vl: %f, vr: %f", _PPSl, _PPSr, vl, vr);
 }
 
 void WheelTicksCallback(const geometry_msgs::Vector3::ConstPtr& ticks)
@@ -60,7 +60,7 @@ void WheelTicksCallback(const geometry_msgs::Vector3::ConstPtr& ticks)
   _PreviousRightEncoderCounts = ticks->y;
   last_time_encoder = current_time_encoder;
 
-  ROS_INFO("WheelTicksCallback: deltaLeft: %f, deltaRight: %f, distance_left: %f, distance_right: %f", deltaLeft, deltaRight, distance_left, distance_right);
+  // ROS_INFO("WheelTicksCallback: deltaLeft: %f, deltaRight: %f, distance_left: %f, distance_right: %f", deltaLeft, deltaRight, distance_left, distance_right);
 }
 
 void OdometryCallback(const geometry_msgs::Vector3::ConstPtr& odom_msg)
@@ -69,7 +69,7 @@ void OdometryCallback(const geometry_msgs::Vector3::ConstPtr& odom_msg)
   y = odom_msg->y;
   th = odom_msg->z;
 
-  ROS_INFO("OdometryCallback: x: %f, y: %f, th: %f", x, y, th);
+  // ROS_INFO("OdometryCallback: x: %f, y: %f, th: %f", x, y, th);
 }
 
 int main(int argc, char **argv)
@@ -147,13 +147,12 @@ int main(int argc, char **argv)
     odom.pose.pose.position.z = 0.0;
     odom.pose.pose.orientation = odom_quat;
 
-	// hi
     odom.pose.covariance[0] =  0.01;
     odom.pose.covariance[7] =  0.01;
     odom.pose.covariance[14] = 0.01;
-    odom.pose.covariance[21] = 0.01;
-    odom.pose.covariance[28] = 0.01;
-    odom.pose.covariance[35] = 0.01;
+    odom.pose.covariance[21] = 0.1;
+    odom.pose.covariance[28] = 0.1;
+    odom.pose.covariance[35] = 0.1;
    
     //set the velocity
     odom.child_frame_id = "base_footprint";
