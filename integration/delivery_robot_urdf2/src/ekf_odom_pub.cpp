@@ -49,7 +49,7 @@ const double PI = 3.141592;
 const double TICKS_PER_REVOLUTION = 1320; // For reference purposes.
 const double WHEEL_RADIUS = 0.065; // Wheel radius in meters
 const double WHEEL_BASE = 0.45; // Center of left tire to center of right tire
-const double TICKS_PER_METER = 3235; // Original was 2800
+const double TICKS_PER_METER = 3235;
 
 // Distance both wheels have traveled
 double distanceLeft = 0;
