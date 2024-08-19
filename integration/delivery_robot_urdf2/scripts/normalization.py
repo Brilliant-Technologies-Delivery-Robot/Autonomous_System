@@ -3,6 +3,7 @@ import rospy
 from sensor_msgs.msg import Imu
 from tf.transformations import euler_from_quaternion
 from geometry_msgs.msg import PoseWithCovarianceStamped
+from std_msgs.msg import Float64
 
 def normalize_quaternion(quaternion):
     x = quaternion.x
@@ -35,12 +36,14 @@ def odom_callback(data):
     orientation = data.pose.pose.orientation
     euler_angles = euler_from_quaternion([orientation.x, orientation.y, orientation.z, orientation.w])
     print("Yaw: ", euler_angles[2] * 180 / 3.14159265359)
+    yaw_pub.publish(euler_angles[2])
 
 while not rospy.is_shutdown():
     rospy.init_node('imu_normalizer', anonymous=True)
 
     imu_sub = rospy.Subscriber('/imu/data', Imu, imu_callback)
     imu_pub = rospy.Publisher('/imu_data', Imu, queue_size=10)
+    yaw_pub = rospy.Publisher('/yaw', Float64, queue_size=10)
     odom_sub = rospy.Subscriber('/robot_pose_ekf/odom_combined', PoseWithCovarianceStamped, odom_callback)
 
     rospy.spin()
