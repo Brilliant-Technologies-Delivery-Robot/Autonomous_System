@@ -90,35 +90,6 @@ int main(int argc, char **argv)
   while(ros::ok()) {
     current_time = ros::Time::now();
 
-    // if (use_wheel_speeds == true) 
-    // {
-    //   linear_velocity = (vr + vl) / 2.0;
-    //   angular_velocity = (vr - vl) / wheel_base;
-    //   double dt = (current_time - last_time).toSec();
-    //   double delta_x = linear_velocity * cos(th) * dt;
-    //   double delta_y = linear_velocity * sin(th) * dt;
-    //   double delta_th = angular_velocity * dt;
-    //   x += delta_x;
-    //   y += delta_y;
-    //   th += delta_th;
-
-    //   ROS_INFO("x: %f, y: %f, th: %f", x, y, th);
-    // }
-
-    // else
-    // {
-    //   linear_distance = (distance_left + distance_right) / 2.0;
-    //   angular_distance = (distance_right - distance_left) / wheel_base;
-    //   double delta_x = linear_distance * cos(th);
-    //   double delta_y = linear_distance * sin(th);
-    //   double delta_th = angular_distance;
-    //   x += delta_x;
-    //   y += delta_y;
-    //   th += delta_th;
-
-    //   ROS_INFO("x: %f, y: %f, th: %f", x, y, th);
-    // }
-
     //since all odometry is 6DOF we'll need a quaternion created from yaw
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
 
