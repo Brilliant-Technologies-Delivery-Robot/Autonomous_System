@@ -11,6 +11,8 @@
     <include file="$(find ros_imu_bno055)/launch/imu.launch"/>
     <include file="$(find delivery_robot_urdf2)/launch/ekf.launch"/>
     <include file="$(find delivery_robot_urdf2)/launch/rviz.launch"/>
+      <!-- <node pkg="delivery_robot_urdf2" type="global_localization.py" name="global_localization" output="screen" /> -->
+
     
     
     <include file="$(find navigation_stack)/launch/includes/move_base.launch.xml">

@@ -1,7 +1,6 @@
 <launch>
 
-  <node pkg="delivery_robot_urdf2" type="normalization.py" name="imu_normalizer" output="screen"/>
-
+  <node pkg="delivery_robot_urdf2" type="normalization.py" name="imu_normalizer" output="screen" />
   <!-- <include file="$(find gmapping)/slam_gmapping_pr2.launch"/> -->
   <include file="$(find rplidar_ros)/launch/rplidar_a1.launch"/>
   <include file="$(find delivery_robot_urdf2)/launch/rosserial.launch"/>
@@ -13,5 +12,6 @@
   <!-- <include file="$(find delivery_robot_urdf2)/launch/control.launch"/> -->
   <!-- <node name="hardware_interface" pkg="delivery_robot_urdf2" type="hardware_interface" output="screen"/> -->
   <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find delivery_robot_urdf2)/config/rviz_integration.rviz"/>  
-    
+   
+  <node pkg="delivery_robot_urdf2" type="global_localization.py" name="global_localization" output="screen" />
 </launch>
