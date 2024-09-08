@@ -28,14 +28,13 @@ def imu_callback(data):
     normalized_quaternion = normalize_quaternion(data.orientation)
     data.orientation = normalized_quaternion
     data.orientation_covariance = [0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001]
-    # print(data.orientation.x, data.orientation.y, euler_from_quaternion([data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w])[2])
+    print(data.orientation.x, data.orientation.y, euler_from_quaternion([data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w])[2])
     imu_pub.publish(data)
 
 def odom_callback(data):
     # print odom orientation data in euler angles (degrees)
     orientation = data.pose.pose.orientation
     euler_angles = euler_from_quaternion([orientation.x, orientation.y, orientation.z, orientation.w])
-    print("Yaw: ", euler_angles[2] * 180 / 3.14159265359)
     yaw_pub.publish(euler_angles[2])
 
 while not rospy.is_shutdown():
