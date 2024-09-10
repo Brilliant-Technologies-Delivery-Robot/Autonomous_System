@@ -12,6 +12,6 @@
   <!-- define robot describtion -->
   <param name="robot_description" textfile="$(find delivery_robot_urdf2)/urdf/delivery_robot_urdf2.urdf" />
 
-  <node name="odometry_publisher" pkg="delivery_robot_urdf2" type="odom" output="screen"/> 
+ <!--  <node name="odometry_publisher" pkg="delivery_robot_urdf2" type="odom" output="screen"/> --> 
     
 </launch>
