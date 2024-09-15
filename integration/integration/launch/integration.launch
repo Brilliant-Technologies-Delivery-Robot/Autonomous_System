@@ -1,5 +1,7 @@
 <launch>
     <node pkg="delivery_robot_urdf2" type="sync_imu_odom.py" name="imu_normalizer" output="screen"/>
+    <node pkg="delivery_robot_urdf2" type="goal_stop.py" name="goal_status_listener" output="screen"/>
+
     <!-- <node pkg="integration" type="automated_goal_execution.py" name="send_goals_py" output="screen"/> -->
 
   
