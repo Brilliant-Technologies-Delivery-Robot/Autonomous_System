@@ -107,13 +107,13 @@ int main(int argc, char **argv) {
     // Publishers
     ros::Publisher imu_pub = n.advertise<sensor_msgs::Imu>("/imu_data", 10);
     ros::Publisher yaw_pub = n.advertise<std_msgs::Float64>("/yaw", 10);
-    ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 1000);
+    ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("/odom", 1000);
 
     // Subscribers
     ros::Subscriber imu_sub = n.subscribe<sensor_msgs::Imu>("/imu/data", 10, 
         boost::bind(imuCallback, _1, boost::ref(imu_pub), boost::ref(yaw_pub), 
                     boost::ref(odom_pub)));
-    ros::Subscriber position_sub = n.subscribe("position", 100, odomCallback);
+    ros::Subscriber position_sub = n.subscribe("/position", 100, odomCallback);
 
     // Initialize latest_odom header
     latest_odom.header.frame_id = "odom";

@@ -36,5 +36,5 @@ foreach(dir config launch meshes urdf)
 		DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
 endforeach(dir)
 
-add_executable(odom src/odom_pub.cpp)
+add_executable(odom src/sync_imu_odom.cpp)
 target_link_libraries(odom ${catkin_LIBRARIES})

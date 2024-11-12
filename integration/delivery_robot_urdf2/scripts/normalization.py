@@ -28,7 +28,7 @@ def imu_callback(data):
     normalized_quaternion = normalize_quaternion(data.orientation)
     data.orientation = normalized_quaternion
     data.orientation_covariance = [0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001]
-    print(data.orientation.x, data.orientation.y, euler_from_quaternion([data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w])[2])
+   # print(data.orientation.x, data.orientation.y, euler_from_quaternion([data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w])[2])
     imu_pub.publish(data)
 
 def odom_callback(data):

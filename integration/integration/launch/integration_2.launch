@@ -1,0 +1,31 @@
+<launch>
+    <node pkg="delivery_robot_urdf2" type="sync_imu_odom.py" name="imu_normalizer" output="screen"/>
+    <node pkg="delivery_robot_urdf2" type="goal_stop.py" name="goal_status_listener" output="screen"/>
+    <node pkg="delivery_robot_urdf2" name="odom" type="odom" output="screen"/>
+
+    <!-- <node pkg="urdf_assem" type="normalization.py" name="imu_normalizer" output="screen" />-->
+    <!-- <node pkg="integration" type="automated_goal_execution.py" name="send_goals_py" output="screen"/> -->
+
+  
+      <!--<include file="$(find gmapping)/slam_gmapping_pr2.launch"/> -->
+    <include file="$(find rplidar_ros)/launch/rplidar_a1.launch"/>
+    <include file="$(find urdf_assem)/launch/rosserial.launch"/>
+    <include file="$(find urdf_assem)/launch/odom.launch"/>
+   <include file="$(find amcl2)/launch/localization.launch"/>
+    <include file="$(find ros_imu_bno055)/launch/imu.launch"/>
+    <include file="$(find urdf_assem)/launch/ekf.launch"/>
+    <include file="$(find urdf_assem)/launch/rviz.launch"/>
+      <!-- <node pkg="delivery_robot_urdf2" type="global_localization.py" name="global_localization" output="screen" /> -->
+
+    
+    
+    <include file="$(find navigation_stack)/launch/includes/move_base.launch.xml">
+		<arg name="base_frame_id" value="base_link"/>
+		<arg name="odom_topic" value="/odom" /> 
+		<arg name="odom_frame_id" value="odom_ekf"/>
+		<arg name="cmd_vel_topic" value="/cmd_vel" />
+		<arg name="custom_param_file" value="$(find navigation_stack)/param/r200_costmap_params.yaml"/>
+	</include>
+
+
+  </launch>

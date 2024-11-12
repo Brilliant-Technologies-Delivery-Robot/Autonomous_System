@@ -54,6 +54,9 @@ while not rospy.is_shutdown():
 
     imu_sub = rospy.Subscriber('/imu/data', Imu, imu_callback)
     rospy.Subscriber('/odom_raw', Odometry, odom_callback)
+    #rospy.Subscriber('/robot_pose_ekf/odom_combined', PoseWithCovarianceStamped, odom_callback)
+
+
 
     imu_pub = rospy.Publisher('/imu_data', Imu, queue_size=10)
     yaw_pub = rospy.Publisher('/yaw', Float64, queue_size=10)
