@@ -1,0 +1,15 @@
+<launch>
+    <!-- Launch camera_stream_sim node -->
+    <node name="camera_stream_sim" pkg="face_detect" type="camera_stream_and_pub.py" output="screen">
+    </node>
+
+    <!-- Launch camera_sub_sim node -->
+    <node name="camera_sub_sim" pkg="face_detect" type="sub_and_detect_face.py" output="screen">
+    </node>
+
+    <!-- Launch sub_detgepthimage node -->
+    <node name="sub_detgepthimage" pkg="face_detect" type="track_control_face.py" output="screen">
+    </node>
+    
+</launch>
+
