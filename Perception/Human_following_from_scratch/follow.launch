@@ -1,0 +1,27 @@
+<launch>
+    <!-- Launch camera_stream_sim node -->
+    <node name="camera_stream_sim" pkg="human_follow" type="camera_stream_sim.py" output="screen">
+    </node>
+
+    <!-- Launch camera_sub_sim node -->
+    <node name="camera_sub_sim" pkg="human_follow" type="camera_sub_sim.py" output="screen">
+    </node>
+
+    <!-- Launch sub_detgepthimage node -->
+    <node name="sub_detgepthimage" pkg="human_follow" type="sub_detgepthimage.py" output="screen">
+    </node>
+    
+    <!-- Launch node that convert pixels coordinates into meters  node -->
+    <node name="get_coordinates_in_meter" pkg="human_follow" type="convert_error_to_meter.py" output="screen">
+    </node>
+    
+        <!-- Launch transformations from camera optical frame to base link node -->
+    <node name="Transoframtions_node" pkg="human_follow" type="conversion_transform.py" output="screen">
+    </node>
+    
+    <!-- Launch lateral and longtudinal controllers node -->
+    <node name="Lateral_Longtudinal_Controllers_node" pkg="human_follow" type="Control.py" output="screen">
+    </node>
+    
+</launch>
+
