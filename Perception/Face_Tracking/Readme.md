@@ -131,11 +131,11 @@ To run all the python files after making it in a package file in your workspace 
 - Images
 <div style="display: flex; justify-content: space-between;">
   <div style="text-align: center;">
-    <img src="/Perception/Face_Tracking/Results/Frame.png" alt="Simulation Example" width="45%">
+    <img src="/Perception/Face_Tracking/Results/Frame.png" alt="Simulation Example" width="40%">
     <p><strong>Figure 1:</strong> Simulation Example</p>
   </div>
   <div style="text-align: center;">
-    <img src="/Perception/Face_Tracking/Results/output_image.jpg" alt="Real-Life Example" width="45%">
+    <img src="/Perception/Face_Tracking/Results/output_image.jpg" alt="Real-Life Example" width="40%">
     <p><strong>Figure 2:</strong> Real-Life Example</p>
   </div>
 </div>
