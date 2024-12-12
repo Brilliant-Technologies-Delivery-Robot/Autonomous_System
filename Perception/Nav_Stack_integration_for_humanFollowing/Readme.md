@@ -43,14 +43,6 @@ The python files of in the both folders are similar. only the main difference th
  roslaunch freenect_launch freenect.launch depth_registration:=true
 ```
 
-## Deploy Real-Life Codes
-To use these files and the launch file attached in the folder. 
-```bash
-    git clone -b <branch_name> <repo_url>
-    catkin build
-    roslaunch <package_name> real_life_kinect.launch
-```
-
 ## Codes Explanation
 - codes_in_real_life --> kinect_frame_pub.py:
  This python file mainly used to publish the frame that the kinect can see. and there'e no similar file in the codes_in_sim folder
@@ -66,3 +58,16 @@ We use the calibration data of the camera to convert these data from the pixel d
 
 - codes_in_sim --> conversion_transform.py:
 This file used in simulation to make transformation from the camera frame to the base link.
+
+## How to use 
+```bash
+    git clone -b <branch_name> <repo_url>
+    catkin build
+    roslaunch <package_name> camera_send_goal_with_tracker.launch
+    but first
+    roslaunch freenect_launch freenect.launch depth_registration:=true
+    roslaunch delivery_robot_sim <world_launch_file.laucnh>
+```
+
+
+

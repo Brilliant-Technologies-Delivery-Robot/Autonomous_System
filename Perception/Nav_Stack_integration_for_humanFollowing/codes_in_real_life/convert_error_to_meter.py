@@ -1,74 +1,174 @@
 #!/usr/bin/env python3
 
 import rospy
-from std_msgs.msg import Int16
+from std_msgs.msg import Int16 , Float32
 from geometry_msgs.msg import Point
 
-class ConvertToMeter:
+
+class DepthIndicator:
+    """
+    Handles the depth indicator logic and state.
+    """
+
     def __init__(self):
-        # Initialize node
-        rospy.init_node('convert_to_meter_node')
-        
-        # Subscribers to /error_x, /error_y, and /depth_center_point topics
-        self.error_x_sub = rospy.Subscriber('/error_x', Int16, self.error_x_callback)
-        self.error_y_sub = rospy.Subscriber('/error_y', Int16, self.error_y_callback)
-        self.depth_sub = rospy.Subscriber('/depth_center_point', Point, self.depth_callback)
+        self.value = 0
 
-        # Publisher to /error_xy_meter topic (for Point message)
-        self.error_xy_meter_pub = rospy.Publisher('/goal_to_nav_stack', Point, queue_size=10)
+    def update(self, value):
+        self.value = value
+        rospy.loginfo(f"Depth Indicator Value: {self.value}")
 
-        # Initialize camera calibration parameters
-        self.fx = 528.433756558705  # Focal length in pixels (x)
-        self.fy = 528.433756558705  # Focal length in pixels (y)
-        self.cx = 320.5  # Principal point (x) (center of image width)
-        self.cy = 240.5  # Principal point (y) (center of image height)
+    def is_invalid_depth(self):
+        return self.value == 1
 
-        # Initialize variables to store error values and depth data
+
+class CameraCalibration:
+    """
+    Stores camera calibration parameters for conversion.
+    """
+
+    def __init__(self, fx, fy, cx, cy):
+        self.fx = fx
+        self.fy = fy
+        self.cx = cx
+        self.cy = cy
+
+
+class PixelToMeterConverter:
+    """
+    Converts pixel coordinates and depth to real-world meters.
+    """
+
+    def __init__(self, calibration):
+        self.calibration = calibration
+
+    def convert(self, error_x, error_y, depth_z):
+        """
+        Converts pixel offsets and depth into real-world coordinates.
+        """
+        if depth_z <= 0:
+            rospy.logwarn("Invalid depth value received for conversion")
+            return None
+
+        x_pixel = self.calibration.cx + error_x
+        y_pixel = self.calibration.cy + error_y
+
+        x_meter = (x_pixel - self.calibration.cx) * depth_z / self.calibration.fx
+        y_meter = (y_pixel - self.calibration.cy) * depth_z / self.calibration.fy
+
+        rospy.loginfo(f"Converted to meters: X={x_meter}, Y={y_meter}, Z={depth_z}")
+        return Point(x=depth_z, y=x_meter, z=0)
+
+
+class ErrorState:
+    """
+    Maintains the current error state (error_x, error_y) and depth (depth_z).
+    """
+
+    def __init__(self):
         self.error_x = 0
         self.error_y = 0
-        self.depth_z = 0.0  # Z-value (depth) at the center of the object
+        self.depth_z = 0.0
+
+    def update_error_x(self, value):
+        self.error_x = value
+
+    def update_error_y(self, value):
+        self.error_y = value
+
+    def update_depth(self, value):
+        self.depth_z = value
+
+
+class GoalPublisher:
+    """
+    Publishes the converted goal coordinates to a ROS topic.
+    """
+
+    def __init__(self, topic_name):
+        self.publisher = rospy.Publisher(topic_name, Point, queue_size=10)
+
+    def publish(self, point):
+        self.publisher.publish(point)
+        rospy.loginfo(f"Published Point: {point}")
+
+
+class ConvertToMeterNode:
+    """
+    The main orchestrator that ties all components together.
+    """
+
+    def __init__(self):
+        rospy.init_node('convert_to_meter_node')
+
+        # Components adhering to SRP
+        self.indicator = DepthIndicator()
+        self.calibration = CameraCalibration(
+            fx=528.433756558705,
+            fy=528.433756558705,
+            cx=320.5,
+            cy=240.5
+        )
+        self.converter = PixelToMeterConverter(self.calibration)
+        self.error_state = ErrorState()
+        self.publisher = GoalPublisher('/goal_to_nav_stack')
+
+        # Subscribers
+        rospy.Subscriber('/error_x', Int16, self.error_x_callback)
+        rospy.Subscriber('/error_y', Int16, self.error_y_callback)
+        rospy.Subscriber('/depth_center_point', Float32, self.depth_callback)
+        rospy.Subscriber('/depth_indicator', Int16, self.indicator_callback)
+
+    def indicator_callback(self, data):
+        """
+        Updates the depth indicator value.
+        """
+        self.indicator.update(data.data)
+        self.process_conversion()
 
     def error_x_callback(self, data):
-        self.error_x = data.data
-        self.convert_pixel_to_meter()
+        """
+        Updates the error in the x-axis.
+        """
+        self.error_state.update_error_x(data.data)
+        self.process_conversion()
 
     def error_y_callback(self, data):
-        self.error_y = data.data
-        self.convert_pixel_to_meter()
+        """
+        Updates the error in the y-axis.
+        """
+        self.error_state.update_error_y(data.data)
+        self.process_conversion()
 
     def depth_callback(self, data):
-        # Retrieve the depth (Z) value from the Point message
-        self.depth_z = data.z  # Z represents the depth at the center
-        self.convert_pixel_to_meter()
+        """
+        Updates the depth value from the Point message.
+        """
+        self.error_state.update_depth(data.data)
+        self.process_conversion()
 
-    def convert_pixel_to_meter(self):
-        if self.depth_z > 0:  # Ensure valid depth
-            # Get pixel coordinates by adding error to principal point
-            x_pixel = self.cx + self.error_x
-            y_pixel = self.cy + self.error_y
+    def process_conversion(self):
+        """
+        Processes the conversion of pixel to real-world coordinates and publishes.
+        """
+        if self.indicator.is_invalid_depth():
+            rospy.loginfo("Publishing zeros due to depth indicator being 1")
+            self.publisher.publish(Point(0, 0, 0))
+            return
 
-            # Convert pixel errors to real-world coordinates (in meters)
-            x_meter = (x_pixel - self.cx) * self.depth_z / self.fx
-            y_meter = (y_pixel - self.cy) * self.depth_z / self.fy
+        point = self.converter.convert(
+            self.error_state.error_x,
+            self.error_state.error_y,
+            self.error_state.depth_z
+        )
 
-            # Create a Point message and populate it with the converted values
-            point_msg = Point()
-            
-            point_msg.x = self.depth_z
-            point_msg.y = x_meter
-            point_msg.z = 0
+        if point:
+            self.publisher.publish(point)
 
-            # Publish the Point message to /error_xy_meter topic
-            self.error_xy_meter_pub.publish(point_msg)
-
-            rospy.loginfo(f"Converted to meters: X={x_meter}, Y={y_meter}, Z={self.depth_z}")
-        else:
-            rospy.logwarn("Invalid depth value")
 
 if __name__ == '__main__':
     try:
-        # Create instance of ConvertToMeter and keep the node running
-        converter = ConvertToMeter()
+        # Create instance of ConvertToMeterNode and keep the node running
+        node = ConvertToMeterNode()
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
