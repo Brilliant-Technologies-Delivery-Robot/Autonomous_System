@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2.7
 import rospy
 from sensor_msgs.msg import Imu
 import tf
@@ -21,7 +21,7 @@ def imu_callback(msg):
     yaw = euler[2] * (180.0 / math.pi)    # Convert to degrees
 
     # Print the Euler angles in degrees
-    rospy.loginfo("Roll: %f, Pitch: %f, Yaw: %f", roll, pitch, yaw)
+   #  rospy.loginfo("Roll: %f, Pitch: %f, Yaw: %f", roll, pitch, yaw)
 
 def main():
     # Initialize the ROS node

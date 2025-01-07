@@ -26,19 +26,19 @@ def status_callback(msg):
         zero_vel.linear.x = 0.0
         zero_vel.angular.z = 0.0
         cmd_vel_pub.publish(zero_vel)
-        rospy.loginfo("Publishing Zero")
+      #  rospy.loginfo("Publishing Zero")
 
 
     if not status_goal_reached:
         result_goal_reached = False
-        rospy.loginfo("lower result_goal_reached")
+      #  rospy.loginfo("lower result_goal_reached")
 
 
 def result_callback(msg):
     global result_goal_reached
     if msg.status.status == 3:
         result_goal_reached = True
-        rospy.loginfo("Goal reached, stopping the robot.")
+     #   rospy.loginfo("Goal reached, stopping the robot.")
 
 def listener():
     rospy.init_node('goal_status_listener', anonymous=True)

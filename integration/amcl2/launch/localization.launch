@@ -4,7 +4,7 @@
   <arg name="configuration_basename" default="turtlebot3_lds_2d.lua"/>
   <arg name="move_forward_only" default="false"/>
 
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find urdf_assem)/maps/door5.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find urdf_assem)/maps/corridor.yaml"/>
 
   <!-- <node
   name="joint_state_publisher_gui"
